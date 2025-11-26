@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- NEW: Add Chart.js for the pie chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -32,6 +34,8 @@
                 <button data-mode="learn" class="nav-button flex-1 rounded-md">Learn</button>
                 <button data-mode="match" class="nav-button flex-1 rounded-md">Match</button> 
                 <button data-mode="type" class="nav-button flex-1 rounded-md">Type</button>
+                <!-- NEW: Add Progress Tab -->
+                <button data-mode="progress" class="nav-button flex-1 rounded-md">Progress</button>
                 <button data-mode="create" class="nav-button flex-1 rounded-md">Create</button>
                 <button id="share-deck-button" class="flex-1 rounded-md hidden">Share Deck</button>
             </nav>
@@ -162,99 +166,56 @@
                 </div>
             </div>
 
-            <div id="type-view" class="app-view">
-                <div id="type-progress-container" class="progress-bar-container hidden mb-6">
-                    <div id="type-progress-bar" class="progress-bar"></div>
-                </div>
-                <div id="type-mode-disabled" class="text-center p-8 md:p-12 rounded-lg hidden">
-                    <h2 class="text-2xl font-semibold mb-4">Type Mode Needs Cards</h2>
-                    <p>This mode requires at least 1 card in your deck. Please add more cards to get started.</p>
-                </div>
-
-                <div id="type-mode-quiz" class="hidden space-y-6">
-                    <div id="type-question-box" class="p-6 rounded-2xl min-h-[150px] flex items-center justify-center">
-                        <p id="type-question-term" class="text-3xl font-medium text-center"></p>
-                    </div>
-
-                    <form id="type-input-form">
-                        <div id="type-input-wrapper" class="relative">
-                            <input type="text" id="type-input-area" placeholder="Type the answer..." class="w-full text-lg p-4 pr-28 rounded-lg">
-                            <button id="type-submit-button" type="submit" class="absolute right-2 top-2 bottom-2 main-action-button font-medium px-6 rounded-lg">
-                                Enter
-                            </button>
+            <!-- NEW: Progress View -->
+            <div id="progress-view" class="app-view space-y-8">
+                
+                <!-- 1. Mastery Overview -->
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Your Mastery</h2>
+                    <div id="mastery-stats-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        <div class="mastery-stat-box bg-green-200 border-green-400">
+                            <span id="mastery-mastered" class="text-3xl font-bold">0</span>
+                            <span class="font-semibold">Mastered</span>
                         </div>
-                    </form>
-
-                    <div id="type-feedback-container" class="mt-4 flex gap-4 hidden">
-                        <div id="type-feedback" class="flex-grow p-4 rounded-lg text-center font-medium">
-                            <p id="type-feedback-message" class="text-lg"></p>
-                            <p id="type-feedback-correct-answer" class="mt-2"></p>
-                            <button id="type-override-wrong-button" class="type-override-button hidden">
-                                I got it wrong
-                            </button>
-                            <button id="type-override-correct-button" class="type-override-button hidden">
-                                I got it correct
-                            </button>
+                        <div class="mastery-stat-box bg-yellow-200 border-yellow-400">
+                            <span id="mastery-learning" class="text-3xl font-bold">0</span>
+                            <span class="font-semibold">Learning</span>
                         </div>
-                        <button id="type-continue-button" class="continue-button hidden">Continue</button>
-                    </div>
-                </div>
-
-                <div id="type-complete-view" class="text-center p-8 md:p-12 rounded-lg hidden">
-                    <h2 class="text-2xl font-semibold mb-4">You've mastered this round!</h2>
-                    <p class="mb-8">You answered all questions correctly.</p>
-                    <div class="flex flex-col md:flex-row gap-4 justify-center">
-                        <button id="type-restart-button" class="main-action-button font-medium py-3 px-6 rounded-lg">
-                            Start Again
-                        </button>
-                        <button id="type-switch-mode-button" class="secondary-action-button font-medium py-3 px-6 rounded-lg">
-                            Switch to Flashcards
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="match-view" class="app-view">
-                <div id="match-mode-disabled" class="text-center p-8 md:p-12 rounded-lg hidden">
-                    <h2 class="text-2xl font-semibold mb-4">Match Mode Needs More Cards</h2>
-                    <p>This mode requires at least 2 cards in your deck. Please add more cards to get started.</p>
-                </div>
-
-                <div id="match-start-screen" class="text-center p-8 md:p-12 rounded-lg hidden">
-                    <h2 class="text-2xl font-semibold mb-4">Match Game</h2>
-                    <p class="mb-8">Find the matching terms and definitions as fast as you can!</p>
-                    <button id="match-start-button" class="main-action-button font-medium py-3 px-6 rounded-lg">
-                        Start Game
-                    </button>
-                </div>
-
-                <div id="match-mode-game" class="hidden">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xl font-bold">Match the pairs!</h2>
-                        <div class="text-right">
-                            <div id="match-timer" class="text-2xl font-bold">0.0s</div>
-                            <div id="match-best-time" class="text-sm">Best: --.-s</div>
+                        <div class="mastery-stat-box bg-gray-200 border-gray-400">
+                            <span id="mastery-not-learned" class="text-3xl font-bold">0</span>
+                            <span class="font-semibold">Not Learned</span>
                         </div>
                     </div>
-                    <div id="match-game-area" class="grid grid-cols-2 gap-4">
-                        <div id="match-terms-list" class="space-y-3">
-                            </div>
-                        <div id="match-defs-list" class="space-y-3">
-                            </div>
+                    <p class="text-sm text-center mt-3">"Mastered" cards have a high score, "Learning" are in progress, and "Not Learned" have a score of 0.</p>
+                </div>
+
+                <!-- 2. Latest Session Stats -->
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Latest Round</h2>
+                    <div id="progress-no-session" class="text-center p-8 md:p-12 rounded-lg progress-box hidden">
+                        <h3 class="text-xl font-semibold mb-2">No session data yet!</h3>
+                        <p>Complete a round in Learn, Type, or Match to see your stats here.</p>
+                    </div>
+                    <div id="progress-session-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center hidden">
+                        <div id="progress-chart-container" class="relative w-full max-w-xs mx-auto">
+                            <canvas id="progress-pie-chart"></canvas>
+                        </div>
+                        <div id="latest-session-stats" class="text-center md:text-left space-y-2">
+                            <!-- Stats will be populated by JS -->
+                        </div>
                     </div>
                 </div>
 
-                <div id="match-complete-view" class="text-center p-8 md:p-12 rounded-lg hidden">
-                    <h2 class="text-2xl font-semibold mb-4">You've matched them all!</h2>
-                    <p class="mb-8">Great job! You've completed this set.</p>
-                    <div class="flex flex-col md:flex-row gap-4 justify-center">
-                        <button id="match-restart-button" class="main-action-button font-medium py-3 px-6 rounded-lg">
-                            Play Again
-                        </button>
-                        <button data-mode="type" class="nav-button secondary-action-button font-medium py-3 px-6 rounded-lg">
-                            Switch to Type
-                        </button>
+                <!-- 3. Session History -->
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">Session History</h2>
+                    <div id="progress-no-history" class="text-center p-8 md:p-12 rounded-lg progress-box hidden">
+                        <h3 class="text-xl font-semibold mb-2">No history to show.</h3>
+                        <p>Your past study sessions will appear here as you complete them.</p>
                     </div>
+                    <ul id="progress-history-list" class="space-y-3">
+                        <!-- History items will be populated by JS -->
+                    </ul>
                 </div>
             </div>
 

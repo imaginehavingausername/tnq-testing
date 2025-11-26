@@ -27,6 +27,15 @@ html {
     --color-incorrect: #e3342f;
     --color-incorrect-light: #52201f;
 
+    /* NEW: Add specific mastery colors */
+    --color-mastered: var(--color-correct);
+    --color-mastered-light: var(--color-correct-light);
+    --color-learning: var(--color-secondary);
+    --color-learning-light: var(--color-secondary-light);
+    --color-not-learned: #a0aec0; /* Muted light text */
+    --color-not-learned-light: var(--color-card-bg);
+
+
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.2);
     --shadow-lg: 0 10px 30px rgba(0,0,0,0.3);
@@ -56,6 +65,14 @@ body.light-mode {
     --color-correct-light: #e9f6eb;
     --color-incorrect: #dc3545;
     --color-incorrect-light: #fbebed;
+
+    /* NEW: Add specific mastery colors */
+    --color-mastered: var(--color-correct);
+    --color-mastered-light: var(--color-correct-light);
+    --color-learning: var(--color-secondary);
+    --color-learning-light: var(--color-secondary-light);
+    --color-not-learned: #586380;
+    --color-not-learned-light: #e4e7eb;
 
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
     --shadow-md: 0 4px 12px rgba(48,53,69,0.1);
@@ -278,6 +295,7 @@ body[data-mode="flashcards"] #flashcards-view,
 body[data-mode="learn"] #learn-view,
 body[data-mode="type"] #type-view,
 body[data-mode="match"] #match-view, /* NEW */
+body[data-mode="progress"] #progress-view, /* NEW */
 body[data-mode="empty"] #empty-deck-view {
     display: block;
     animation: fadeIn 0.3s ease;
@@ -810,9 +828,113 @@ body.light-mode .match-item.selected {
 #type-mode-disabled p, /* NEW */
 #type-complete-view p, /* NEW */
 #match-mode-disabled p, /* NEW */
-#match-complete-view p { /* NEW */
+#match-complete-view p, /* NEW */
+#progress-no-session, /* NEW */
+#progress-no-history { /* NEW */
     color: var(--color-text-secondary);
     font-size: 1.1rem;
+}
+
+/* NEW: Progress View Specific Styles */
+#progress-view h2 {
+    color: var(--color-text-primary);
+}
+
+.progress-box {
+    background-color: var(--color-bg-secondary);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--border-radius-card);
+    border: 1px solid var(--color-border);
+}
+
+#mastery-stats-container .mastery-stat-box {
+    border-radius: var(--border-radius-button);
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid;
+}
+
+/* Set text colors to match the border */
+.mastery-stat-box.bg-green-200 {
+    background-color: var(--color-mastered-light) !important;
+    border-color: var(--color-mastered) !important;
+    color: var(--color-mastered);
+}
+.mastery-stat-box.bg-yellow-200 {
+    background-color: var(--color-learning-light) !important;
+    border-color: var(--color-learning) !important;
+    color: var(--color-learning);
+}
+.mastery-stat-box.bg-gray-200 {
+    background-color: var(--color-not-learned-light) !important;
+    border-color: var(--color-not-learned) !important;
+    color: var(--color-not-learned);
+}
+/* Light mode specific text colors */
+body.light-mode .mastery-stat-box.bg-green-200 { color: var(--color-mastered); }
+body.light-mode .mastery-stat-box.bg-yellow-200 { color: var(--color-learning); }
+body.light-mode .mastery-stat-box.bg-gray-200 { color: var(--color-not-learned); }
+
+
+#progress-view p {
+    color: var(--color-text-secondary);
+}
+
+#progress-chart-container {
+    padding: 1rem;
+    background-color: var(--color-card-bg);
+    border-radius: var(--border-radius-card);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+}
+
+#latest-session-stats .stat-item {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+#latest-session-stats .stat-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+}
+#latest-session-stats .stat-label {
+    font-size: 1rem;
+    color: var(--color-text-secondary);
+}
+
+#progress-history-list .history-list-item {
+    background-color: var(--color-card-bg);
+    border-radius: var(--border-radius-button);
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+}
+.history-list-item .info {
+    font-weight: 600;
+}
+.history-list-item .mode {
+    font-weight: 800;
+    color: var(--color-text-primary);
+    text-transform: capitalize;
+}
+.history-list-item .date {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+.history-list-item .score {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+.history-list-item .score .correct {
+    color: var(--color-correct);
+}
+.history-list-item .score .total {
+    color: var(--color-text-secondary);
 }
 
 

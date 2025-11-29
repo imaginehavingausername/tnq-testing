@@ -15,11 +15,11 @@ html {
     --color-secondary: #ffcd1f; /* Quizlet Yellow */
     --color-secondary-light: #443c1c; /* NEW: for 'close' bg */
     
-    --color-bg: #131b33; /* Dark Blue Background */
+    --color-bg: #0a092b; /* Dark Blue Background */
     --color-bg-secondary: #1a2342; /* Slightly lighter bg */
-    --color-card-bg: #232e54; /* Card Background */
-    --color-text-primary: #f0f3ff; /* Light text */
-    --color-text-secondary: #a0aec0; /* Muted light text */
+    --color-card-bg: #303853; /* Card Background */
+    --color-text-primary: #ffffff; /* White text */
+    --color-text-secondary: #f0f3ff; /* Light text */
     --color-border: #3a497c;
     
     --color-correct: #38c172;
@@ -405,34 +405,15 @@ body.light-mode .create-toggle-button.active {
     padding: 0.5rem 0.25rem;
     font-weight: 500;
     resize: none; /* Disable manual resize */
+    overflow: hidden; /* Hide scrollbar */
     min-height: 2.5rem; /* Start height */
     line-height: 1.5;
     transition: border-color 0.2s ease;
-    
-    /* MODIFIED: Enable scrolling for long content */
-    overflow-y: auto; 
-    max-height: 200px; /* Cap height to approx 8-9 lines */
 }
 .card-input-wrapper textarea:focus {
     outline: none;
     border-color: var(--color-primary);
 }
-
-/* Custom scrollbar for textareas */
-.card-input-wrapper textarea::-webkit-scrollbar {
-    width: 8px;
-}
-.card-input-wrapper textarea::-webkit-scrollbar-track {
-    background: transparent;
-}
-.card-input-wrapper textarea::-webkit-scrollbar-thumb {
-    background-color: var(--color-border);
-    border-radius: 4px;
-}
-.card-input-wrapper textarea::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-text-secondary);
-}
-
 
 .delete-card-button {
     background: none;

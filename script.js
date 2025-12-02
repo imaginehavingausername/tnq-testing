@@ -2027,6 +2027,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.headerTitle.textContent = app.currentDeck.title;
             
             showToast("Deck created successfully!");
+            setMode('flashcards'); // <-- EDITED: Navigate to flashcards tab
             return true; // NEW: Return success
             // --- END MODIFICATION ---
 

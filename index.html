@@ -303,6 +303,8 @@
                 <a href="https://forms.gle/Z1xESserXb1NVVDv6" class="footer-link underline">
                     Feature Request
                 </a>
+                <!-- NEW: Keybinds Button -->
+                <button id="keybinds-button" class="footer-link underline cursor-pointer">Keybinds</button>
             </div>
         </footer>
         
@@ -401,6 +403,47 @@
                 <button id="unsaved-cancel-button" class="secondary-action-button font-medium py-3 px-5 rounded-lg">
                     Cancel
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: Keybinds Modal -->
+    <div id="keybinds-modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="modal-backdrop fixed inset-0"></div>
+        <div id="keybinds-modal-content" class="relative w-full max-w-lg p-6 md:p-8 rounded-2xl">
+            <button id="keybinds-modal-close" class="absolute top-4 right-5 text-3xl font-bold">&times;</button>
+            <h2 class="text-2xl font-bold mb-6">Keyboard Shortcuts</h2>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Create Mode</h3>
+                    <ul class="keybind-list">
+                        <li><kbd>Tab</kbd><span>Move between Term and Definition fields</span></li>
+                        <li><kbd>Shift</kbd> + <kbd>Tab</kbd><span>Move to previous field</span></li>
+                        <li><kbd>Shift</kbd> + <kbd>Enter</kbd><span>Add a new, empty card below</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Flashcards Mode</h3>
+                    <ul class="keybind-list">
+                        <li><kbd>Space</kbd><span>Flip the current card</span></li>
+                        <li><kbd>→</kbd><span>Show the next card</span></li>
+                        <li><kbd>←</kbd><span>Show the previous card</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Learn Mode</h3>
+                    <ul class="keybind-list">
+                        <li><kbd>1</kbd> / <kbd>A</kbd> ... <kbd>4</kbd> / <kbd>D</kbd><span>Select an answer option</span></li>
+                        <li><kbd>Space</kbd><span>Continue after viewing feedback</span></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-2">Type Mode</h3>
+                    <ul class="keybind-list">
+                        <li><kbd>Enter</kbd><span>Submit your answer</span></li>
+                        <li><kbd>Space</kbd><span>Continue after viewing feedback</span></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

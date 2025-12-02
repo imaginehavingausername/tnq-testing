@@ -151,6 +151,17 @@
                     </div>
                     <div id="learn-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     </div>
+
+                    <!-- NEW: Restart and Skip Buttons for Learn Mode -->
+                    <div id="learn-controls" class="flex justify-between items-center mt-6">
+                        <button id="learn-restart-session-button" class="text-sm font-bold text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors p-2">
+                            Restart
+                        </button>
+                        <button id="learn-skip-button" class="secondary-action-button px-6 py-2 rounded-lg">
+                            Skip
+                        </button>
+                    </div>
+
                     <div id="learn-feedback-container" class="mt-6 flex gap-4 hidden">
                         <div id="learn-feedback" class="flex-grow p-4 rounded-lg text-center font-medium">
                             <span id="learn-feedback-message"></span>
@@ -194,6 +205,16 @@
                             </button>
                         </div>
                     </form>
+
+                    <!-- NEW: Restart and Skip Buttons for Type Mode -->
+                    <div id="type-controls" class="flex justify-between items-center mt-6">
+                        <button id="type-restart-session-button" class="text-sm font-bold text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors p-2">
+                            Restart
+                        </button>
+                        <button id="type-skip-button" class="secondary-action-button px-6 py-2 rounded-lg">
+                            Skip
+                        </button>
+                    </div>
 
                     <div id="type-feedback-container" class="mt-4 flex gap-4 hidden">
                         <div id="type-feedback" class="flex-grow p-4 rounded-lg text-center font-medium">

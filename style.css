@@ -500,7 +500,8 @@ body.light-mode .create-toggle-button.active {
     /*
       BUG FIX: Removed translateZ(0) from here, moved to .card-back
     */
-    transform: rotateY(180deg);
+    /* EDITED: Changed rotateY to rotateX for vertical flip */
+    transform: rotateX(180deg);
 }
 
 /* REMOVED: All slide animation classes */
@@ -541,7 +542,8 @@ body.light-mode .create-toggle-button.active {
       BUG FIX: Combine the rotation with translateZ(0) to maintain
       the rendering stabilization on the back face.
     */
-    transform: rotateY(180deg) translateZ(0);
+    /* EDITED: Changed rotateY to rotateX for vertical flip */
+    transform: rotateX(180deg) translateZ(0);
 }
 
 /* --- NEW: TTS Button --- */

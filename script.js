@@ -174,6 +174,12 @@ document.addEventListener('DOMContentLoaded', () => {
         unsavedSaveButton: document.getElementById('unsaved-save-button'),
         unsavedDiscardButton: document.getElementById('unsaved-discard-button'),
         unsavedCancelButton: document.getElementById('unsaved-cancel-button'),
+
+        // NEW: Keybinds Modal Elements
+        keybindsButton: document.getElementById('keybinds-button'),
+        keybindsModalOverlay: document.getElementById('keybinds-modal-overlay'),
+        keybindsModalClose: document.getElementById('keybinds-modal-close'),
+        keybindsModalBackdrop: document.querySelector('#keybinds-modal-overlay .modal-backdrop'),
     };
 
     // --- CONSTANTS ---
@@ -699,6 +705,9 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.deckTitleInput.addEventListener('input', () => { app.isCreateDeckDirty = true; });
         dom.deckInputArea.addEventListener('input', () => { app.isCreateDeckDirty = true; });
 
+        // NEW: Keyboard navigation for create mode
+        dom.cardEditorList.addEventListener('keydown', handleCreateEditorKeydown);
+
         // NEW: Drag and Drop Listeners
         dom.cardEditorList.addEventListener('dragstart', handleDragStart);
         dom.cardEditorList.addEventListener('dragover', handleDragOver);
@@ -824,6 +833,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             // If not successful, modal stays open and parseAndLoadDeck shows its own error toast
         });
+
+        // NEW: Keybinds Modal Listeners
+        dom.keybindsButton.addEventListener('click', showKeybindsModal);
+        dom.keybindsModalClose.addEventListener('click', hideKeybindsModal);
+        dom.keybindsModalBackdrop.addEventListener('click', hideKeybindsModal);
     }
 
     /**
@@ -832,11 +846,25 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleGlobalKeydown(e) {
         // Don't interfere with typing in inputs
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-            return;
+            // Specific create-mode shortcuts are handled by 'handleCreateEditorKeydown'
+            // But we must NOT return here if it's the Type Mode input
+            if (app.currentMode === 'type' && e.target.id === 'type-input-area') {
+                 // Allow 'Enter' key to be handled by the form submit listener
+                 if (e.key === 'Enter') {
+                    return;
+                 }
+            } else if (e.target.tagName === 'TEXTAREA') {
+                // Allow other textareas (like create mode) to be handled by
+                // their own listeners
+                return;
+            } else if (e.target.tagName === 'INPUT') {
+                // Allow other inputs (like titles) to just work
+                return;
+            }
         }
 
         // Handle Spacebar
-        if (e.code === 'Space') {
+        if (e.code === 'Space' || e.key === ' ') {
             e.preventDefault(); // Stop page from scrolling
 
             if (app.currentMode === 'flashcards') {
@@ -863,10 +891,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- NEW: Handle Arrow Keys for Flashcards ---
         if (app.currentMode === 'flashcards') {
-            if (e.code === 'ArrowLeft') {
+            if (e.code === 'ArrowLeft' || e.key === 'ArrowLeft') {
                 e.preventDefault(); // Stop page scrolling
                 showPrevCard();
-            } else if (e.code === 'ArrowRight') {
+            } else if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
                 e.preventDefault(); // Stop page scrolling
                 showNextCard();
             }
@@ -896,6 +924,92 @@ document.addEventListener('DOMContentLoaded', () => {
             if (optionToClick) {
                 e.preventDefault();
                 optionToClick.click(); // Simulate a click on the button
+            }
+        }
+    }
+
+    /**
+     * NEW: Handles keyboard navigation (Tab, Shift+Enter) within the create editor.
+     */
+    function handleCreateEditorKeydown(e) {
+        const target = e.target;
+        if (target.tagName !== 'TEXTAREA') return;
+
+        const currentRow = target.closest('.card-editor-row');
+        if (!currentRow) return;
+
+        const isTermInput = target.classList.contains('term-input');
+        const isDefInput = target.classList.contains('def-input');
+
+        // --- Handle Shift + Enter ---
+        if (e.shiftKey && e.key === 'Enter') {
+            e.preventDefault();
+            app.isCreateDeckDirty = true;
+            
+            // 1. Create the new row (it gets appended to the end)
+            createNewCardRow();
+            const newRow = dom.cardEditorList.lastChild;
+
+            if (!newRow) return; // Should not happen
+
+            // 2. Move the new row to be after the current row
+            currentRow.after(newRow);
+
+            // 3. Renumber all rows
+            updateCardRowNumbers();
+
+            // 4. Focus the new row's term input
+            const firstInput = newRow.querySelector('.term-input');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }
+        // --- Handle Tab ---
+        else if (e.key === 'Tab' && !e.shiftKey) {
+            if (isTermInput) {
+                // Tabbing from TERM
+                e.preventDefault();
+                const defInput = currentRow.querySelector('.def-input');
+                if (defInput) {
+                    defInput.focus();
+                }
+            } else if (isDefInput) {
+                // Tabbing from DEFINITION
+                const nextRow = currentRow.nextElementSibling;
+                if (nextRow && nextRow.classList.contains('card-editor-row')) {
+                    // Go to next row's term
+                    e.preventDefault();
+                    const nextTermInput = nextRow.querySelector('.term-input');
+                    if (nextTermInput) {
+                        nextTermInput.focus();
+                    }
+                }
+                // If it's the last defInput, let the browser's default
+                // Tab behavior take over (e.g., go to "Add Card" button).
+            }
+        }
+        // --- Handle Shift + Tab ---
+        else if (e.key === 'Tab' && e.shiftKey) {
+             if (isDefInput) {
+                // Shift-Tabbing from DEFINITION
+                e.preventDefault();
+                const termInput = currentRow.querySelector('.term-input');
+                if (termInput) {
+                    termInput.focus();
+                }
+            } else if (isTermInput) {
+                // Shift-Tabbing from TERM
+                const prevRow = currentRow.previousElementSibling;
+                if (prevRow && prevRow.classList.contains('card-editor-row')) {
+                    // Go to previous row's definition
+                    e.preventDefault();
+                    const prevDefInput = prevRow.querySelector('.def-input');
+                    if (prevDefInput) {
+                        prevDefInput.focus();
+                    }
+                }
+                // If it's the first termInput, let the browser's default
+                // Shift+Tab behavior take over.
             }
         }
     }
@@ -1039,6 +1153,16 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.unsavedChangesModalOverlay.classList.remove('visible');
     }
     // --- End Unsaved Changes Modal Functions ---
+
+    // --- NEW: Keybinds Modal Functions ---
+    function showKeybindsModal() {
+        dom.keybindsModalOverlay.classList.add('visible');
+    }
+
+    function hideKeybindsModal() {
+        dom.keybindsModalOverlay.classList.remove('visible');
+    }
+    // --- End Keybinds Modal Functions ---
 
 
     // --- NEW: Progress Update Function ---
